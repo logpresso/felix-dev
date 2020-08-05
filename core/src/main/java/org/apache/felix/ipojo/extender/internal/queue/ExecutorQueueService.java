@@ -212,8 +212,13 @@ public class ExecutorQueueService extends AbstractQueueService implements Lifecy
 
             if (newSize != m_executorService.getMaximumPoolSize()) {
                 // Apply configuration change
-                m_executorService.setCorePoolSize(newSize);
-                m_executorService.setMaximumPoolSize(newSize);
+                if (newSize < m_executorService.getMaximumPoolSize()) {
+                    m_executorService.setCorePoolSize(newSize);
+                    m_executorService.setMaximumPoolSize(newSize);
+                } else {
+                    m_executorService.setMaximumPoolSize(newSize);
+                    m_executorService.setCorePoolSize(newSize);
+                }
                 m_properties.put(THREADPOOL_SIZE_PROPERTY, newSize);
                 changed = true;
             }

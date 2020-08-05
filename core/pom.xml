@@ -27,7 +27,7 @@
     <packaging>bundle</packaging>
     <name>Apache Felix iPOJO</name>
     <artifactId>org.apache.felix.ipojo</artifactId>
-    <version>1.12.1</version>
+    <version>1.12.1.asm8</version>
 
     <properties>
         <!--
@@ -57,8 +57,8 @@
            1.12.1:
            * small changes in the API
         -->
-        <ipojo.package.version>1.12.1</ipojo.package.version>
-        <ipojo.extender.version>1.12.1</ipojo.extender.version>
+        <ipojo.package.version>1.12.1.asm8</ipojo.package.version>
+        <ipojo.extender.version>1.12.1.asm8</ipojo.extender.version>
     </properties>
 
     <description>
@@ -96,18 +96,12 @@
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.ipojo.annotations</artifactId>
-            <version>1.12.1</version>
+            <version>1.12.1.asm8</version>
         </dependency>
         <dependency>
             <groupId>org.ow2.asm</groupId>
-            <artifactId>asm-all</artifactId>
-            <version>5.0.2</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.ow2.asm</groupId>
-                    <artifactId>asm-tree</artifactId>
-                </exclusion>
-            </exclusions>
+            <artifactId>asm</artifactId>
+            <version>8.0.1</version>
         </dependency>
       <dependency>
         <groupId>org.mockito</groupId>
@@ -129,16 +123,17 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.0</version>
                 <configuration>
-                    <target>1.5</target>
-                    <source>1.5</source>
-                    <testTarget>1.5</testTarget>
-                    <testSource>1.5</testSource>
+                    <target>6</target>
+                    <source>6</source>
+                    <testTarget>6</testTarget>
+                    <testSource>6</testSource>
+					<executable>${JDK_6_HOME}/bin/javac</executable>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.3.7</version>
+                <version>4.2.1</version>
                 <extensions>true</extensions>
                 <executions>
                     <execution>
@@ -181,15 +176,14 @@
                                     org.objectweb.asm;-split-package:=merge-last,
                                     org.objectweb.asm.commons;-split-package:=merge-last,
                                     org.apache.felix.ipojo.metadata,
-                                    org.apache.felix.ipojo.dependency.impl
+									org.apache.felix.ipojo.dependency.impl
                                 </Private-Package>
                                 <Export-Package>
                                     org.apache.felix.ipojo; version="${ipojo.package.version}",
                                     org.apache.felix.ipojo.configuration; version="${ipojo.package.version}",
                                     org.apache.felix.ipojo.metadata; version="${ipojo.package.version}",
                                     org.apache.felix.ipojo.architecture; version="${ipojo.package.version}",
-                                    org.apache.felix.ipojo.extender;
-                                    version="${ipojo.package.version}";-split-package:=merge-first,
+                                    org.apache.felix.ipojo.extender; version="${ipojo.package.version}";-split-package:=merge-first,
                                     org.apache.felix.ipojo.extender.builder; version="${ipojo.package.version}",
                                     org.apache.felix.ipojo.extender.queue; version="${ipojo.package.version}",
                                     org.apache.felix.ipojo.extender.queue.debug; version="${ipojo.package.version}",
@@ -209,9 +203,10 @@
                                 <!-- OSGi Extender Namespace -->
                                 <Provide-Capability>osgi.extender;
                                     osgi.extender="org.apache.felix.ipojo";
-                                    version:Version="${ipojo.extender.version}"
+									version:Version="${ipojo.extender.version}"
                                 </Provide-Capability>
                                 <_donotcopy>(CVS|.svn|.+.bak|~.+|metadata.xml)</_donotcopy>
+								<_noee>true</_noee>
                             </instructions>
                         </configuration>
                     </execution>
@@ -282,7 +277,7 @@
                                 <!-- OSGi Extender Namespace -->
                                 <Provide-Capability>osgi.extender;
                                     osgi.extender="org.apache.felix.ipojo";
-                                    version:Version="${ipojo.extender.version}"
+									version:Version="${ipojo.extender.version}"
                                 </Provide-Capability>
                                 <_donotcopy>(CVS|.svn|.+.bak|~.+|metadata.xml)</_donotcopy>
                             </instructions>
@@ -294,7 +289,7 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-ipojo-plugin</artifactId>
-                <version>1.12.0</version>
+                <version>1.12.1.asm8</version>
                 <executions>
                     <execution>
                         <id>main-artifact-manipulation</id>
@@ -350,16 +345,17 @@
                     </excludes>
                 </configuration>
             </plugin>
-            <plugin>
+            <!--plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>animal-sniffer-maven-plugin</artifactId>
-                <version>1.7</version>
+                <version>1.16</version>
                 <configuration>
                     <signature>
                         <groupId>org.codehaus.mojo.signature</groupId>
                         <artifactId>java15</artifactId>
                         <version>1.0</version>
                     </signature>
+					<skip>true</skip>
                 </configuration>
                 <executions>
                     <execution>
@@ -369,7 +365,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin-->
         </plugins>
     </build>
 
