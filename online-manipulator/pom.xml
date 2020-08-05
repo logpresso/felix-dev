@@ -27,7 +27,7 @@
     <packaging>bundle</packaging>
     <name>Apache Felix iPOJO - Online Manipulator</name>
     <artifactId>org.apache.felix.ipojo.manipulator.online</artifactId>
-    <version>1.12.1</version>
+    <version>1.12.1.asm8</version>
 
     <description>
         iPOJO online manipulator allowing install time manipulation of iPOJO bundle.
@@ -68,7 +68,8 @@
         </dependency>
         <dependency>
             <groupId>org.ow2.asm</groupId>
-            <artifactId>asm-all</artifactId>
+            <artifactId>asm</artifactId>
+			<version>8.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
@@ -103,16 +104,16 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.0</version>
                 <configuration>
-                    <target>1.5</target>
-                    <source>1.5</source>
-                    <testTarget>1.5</testTarget>
-                    <testSource>1.5</testSource>
+                    <target>6</target>
+                    <source>6</source>
+                    <testTarget>6</testTarget>
+                    <testSource>6</testSource>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.3.7</version>
+                <version>4.2.1</version>
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
