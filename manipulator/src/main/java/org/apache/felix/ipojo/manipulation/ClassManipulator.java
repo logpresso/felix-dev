@@ -273,7 +273,7 @@ public class ClassManipulator extends ClassVisitor implements Opcodes {
      * @return FieldVisitor : null
      */
     public FieldVisitor visitField(final int access, final String name, final String desc, final String signature, final Object value) {
-        if ((access & ACC_STATIC) == 0) {
+        if ((access & ACC_STATIC) == 0 && (access & ACC_FINAL) == 0) {
             FieldVisitor flag = cv.visitField(Opcodes.ACC_PRIVATE, FIELD_FLAG_PREFIX + name, "Z", null, null);
             flag.visitEnd();
 
