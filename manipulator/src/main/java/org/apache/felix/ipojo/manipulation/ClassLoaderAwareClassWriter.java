@@ -71,7 +71,7 @@ public class ClassLoaderAwareClassWriter extends ClassWriter {
             c = classLoader.loadClass(type1.replace('/', '.'));
             d = classLoader.loadClass(type2.replace('/', '.'));
         } catch (Exception e) {
-            throw new RuntimeException(e.toString());
+            throw new RuntimeException("with " + type1 + " and " + type2, e);
         }
         if (c.isAssignableFrom(d)) {
             return type1;

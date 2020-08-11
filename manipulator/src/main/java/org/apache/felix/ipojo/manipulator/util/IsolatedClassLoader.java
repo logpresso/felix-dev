@@ -70,6 +70,14 @@ public class IsolatedClassLoader
                     if (parent != null) {
                         c = parent.loadClass(name);
                     }
+                } catch (SecurityException e) { // Prohivited package: java.lang
+                    if (parent != null) {
+                        c = parent.loadClass(name);
+                        if (c == null)
+                            throw e;
+                    } else {
+                        throw e;
+                    }
                 }
             }
 

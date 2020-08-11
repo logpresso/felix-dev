@@ -62,6 +62,8 @@ public class InnerClassAdapter extends ClassVisitor implements Opcodes {
      */
     private Set<String> m_fields;
 
+    private String m_adjOuter;
+
     /**
      * Creates the inner class adapter.
      *
@@ -76,6 +78,7 @@ public class InnerClassAdapter extends ClassVisitor implements Opcodes {
         m_name = name;
         m_simpleName = m_name.substring(m_name.indexOf("$") + 1);
         m_outer = outerClassName;
+        m_adjOuter = outerClassName;
         m_manipulator = manipulator;
         m_fields = manipulator.getFields().keySet();
     }
@@ -217,7 +220,7 @@ public class InnerClassAdapter extends ClassVisitor implements Opcodes {
 
         // Access the flag from the outer class
         mv.visitVarInsn(ALOAD, 0);
-        mv.visitFieldInsn(GETFIELD, m_name, "this$0", "L" + m_outer + ";");
+        generateMostOuterAccessor(mv);
         mv.visitFieldInsn(GETFIELD, m_outer, getMethodFlagName(name, desc), "Z");
         mv.visitJumpInsn(IFNE, l0);
 
@@ -231,7 +234,7 @@ public class InnerClassAdapter extends ClassVisitor implements Opcodes {
         mv.visitLabel(l0);
 
         mv.visitVarInsn(ALOAD, 0);
-        mv.visitFieldInsn(GETFIELD, m_name, "this$0", "L" + m_outer + ";");
+        generateMostOuterAccessor(mv);
         mv.visitFieldInsn(GETFIELD, m_outer, ClassManipulator.IM_FIELD, "Lorg/apache/felix/ipojo/InstanceManager;");
         mv.visitVarInsn(ALOAD, 0);
         mv.visitLdcInsn(getMethodId(name, desc));
@@ -250,7 +253,7 @@ public class InnerClassAdapter extends ClassVisitor implements Opcodes {
         }
 
         mv.visitVarInsn(ALOAD, 0);
-        mv.visitFieldInsn(GETFIELD, m_name, "this$0", "L" + m_outer + ";");
+        generateMostOuterAccessor(mv);
         mv.visitFieldInsn(GETFIELD, m_outer, ClassManipulator.IM_FIELD, "Lorg/apache/felix/ipojo/InstanceManager;");
         mv.visitVarInsn(ALOAD, 0);
         mv.visitLdcInsn(getMethodId(name, desc));
@@ -270,7 +273,7 @@ public class InnerClassAdapter extends ClassVisitor implements Opcodes {
 
         mv.visitVarInsn(ASTORE, exception);
         mv.visitVarInsn(ALOAD, 0);
-        mv.visitFieldInsn(GETFIELD, m_name, "this$0", "L" + m_outer + ";");
+        generateMostOuterAccessor(mv);
         mv.visitFieldInsn(GETFIELD, m_outer, ClassManipulator.IM_FIELD, "Lorg/apache/felix/ipojo/InstanceManager;");
         mv.visitVarInsn(ALOAD, 0);
         mv.visitLdcInsn(getMethodId(name, desc));
@@ -321,6 +324,39 @@ public class InnerClassAdapter extends ClassVisitor implements Opcodes {
         mv.visitEnd();
     }
 
+    private void generateMostOuterAccessor(GeneratorAdapter mv) {
+        // original code
+        // mv.visitFieldInsn(GETFIELD, m_name, "this$0", "L" + m_outer + ";");
+        String curr = m_name;
+        for (int lvl = getLevelOfNest(m_name) - 1; lvl >= 0; --lvl) {
+            String adjOuter = getAdjOuter(curr);
+            mv.visitFieldInsn(GETFIELD, curr, "this$" + lvl, "L" + adjOuter + ";");
+            curr = adjOuter;
+        }
+    }
+
+    private String getAdjOuter(String name) {
+        if (name == null)
+            return "java.lang.Object"; // can't sure
+        int p = name.lastIndexOf("$");
+        if (p == -1)
+            return "java.lang.Object"; // can't sure
+        else 
+            return name.substring(0, p);
+    }
+
+    private int getLevelOfNest(String name) {
+        if (name == null)
+            return 0;
+        int level = 0;
+        int p = name.indexOf("$", 0);
+        while (p != -1) {
+            level += 1;
+            p = name.indexOf("$", p + 1);
+        }
+        return level;
+    }
+
     /**
      * Gets the method descriptor for the specified name and descriptor.
      * The method descriptor is looked inside the
@@ -336,6 +372,12 @@ public class InnerClassAdapter extends ClassVisitor implements Opcodes {
             }
         }
         return null;
+    }
+
+    public void visitOuterClass(String owner, String name, String descriptor) {
+        super.visitOuterClass(owner, name, descriptor);
+        m_adjOuter = owner;
+        // System.out.println("visitOuterClass: " + owner + " " + name + " " + descriptor);
     }
 
 }

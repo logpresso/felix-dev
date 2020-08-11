@@ -138,7 +138,7 @@ public class ClassChecker extends ClassVisitor implements Opcodes {
      * @see org.objectweb.asm.ClassVisitor#visitInnerClass(java.lang.String, java.lang.String, java.lang.String, int)
      */
     public void visitInnerClass(String name, String outerName, String innerName, int access) {
-        if (m_className.equals(outerName) || outerName == null) { // Anonymous classes does not have an outer class.
+        if (outerName == null || outerName.startsWith(m_className)) { // Anonymous classes does not have an outer class.
             // Do not include inner static class
             if (!((access & ACC_STATIC) == ACC_STATIC)) {
                 m_inners.put(name, new ArrayList<MethodDescriptor>());
