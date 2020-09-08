@@ -33,7 +33,7 @@
   <packaging>pom</packaging>
 
   <properties>
-    <asm.version>5.0.2</asm.version>
+    <asm.version>8.0.1</asm.version>
     <metadata.version>1.6.0</metadata.version>
   </properties>
 
@@ -51,15 +51,19 @@
       </dependency>
       <dependency>
         <groupId>org.ow2.asm</groupId>
-        <artifactId>asm-all</artifactId>
+        <artifactId>asm</artifactId>
         <version>${asm.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.ow2.asm</groupId>
-            <artifactId>asm-tree</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
+    </dependency>
+    <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm-commons</artifactId>
+        <version>${asm.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm-util</artifactId>
+        <version>${asm.version}</version>
+    </dependency>
       <dependency>
         <groupId>org.apache.felix</groupId>
         <artifactId>org.apache.felix.ipojo.metadata</artifactId>
